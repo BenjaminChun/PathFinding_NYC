@@ -39,7 +39,7 @@ class Astar:
         Implements the core of algorithm. This method searches, in the search space of the problem, a solution 
     """
 
-  def __init__ (self, graph, distDict, costDict, coordDict start_position, target):
+  def __init__(self, graph, distDict, costDict, coordDict, start_position, target):
     self.graph = graph
     self.start = graph.find_node(start_position)
     self.target = graph.find_node(target)
@@ -165,7 +165,7 @@ class Astar:
     return path
   
   def get_h_value(self,node_value):
-    x,y = self.coordDict['50']
+    x,y = self.coordDict['V4']
     a,b = self.coordDict[node_value]
     h_value=math.sqrt(pow((x-a),2) + pow((y-b),2))
     return h_value
@@ -185,7 +185,7 @@ class Astar:
     count = 0
     open_set = PriorityQueue()
     #get heuristic value
-    h_initial = self.get_h_value('0')
+    h_initial = self.get_h_value(self.start.value)
     open_set.put((h_initial, count, self.start, self.start, 14)) #fuel limit of 14
     tempGraph = Graph()
     tempGraph.add_node(Node(self.start.value))
@@ -194,6 +194,7 @@ class Astar:
     while not open_set.empty():
       self.number_of_steps += 1
       current = open_set.get() #grab the highest priority node
+      print(current[2].value,current[3].value)
       #about to expand current
       #add current to answer graph, tempGraph
       if self.number_of_steps>1:
@@ -216,15 +217,18 @@ class Astar:
       # add the extended nodes in the list opened
       if len(new_nodes) > 0:
         for new_node in new_nodes:
+          print(new_node.value,'hi')
           node1Value = current[2].value
           node2Value = new_node.value
           stringValues = f'{node1Value},{node2Value}'
-          tempScore = current[0] + self.distDict[stringValues]
+          tempScore = current[0] - self.get_h_value(str(node1Value)) + self.distDict[stringValues]
           h_value = self.get_h_value(str(node2Value))
           finalScore = tempScore+h_value
           fuelLeft = current[4] - self.costDict[stringValues]
+          print(self.costDict[stringValues],stringValues)
           if fuelLeft < 0: #should not take this path
             continue
           else:
             count+=1
+            print(tempScore,h_value,node1Value,node2Value)
             open_set.put((finalScore, count, new_node, current[2], fuelLeft))

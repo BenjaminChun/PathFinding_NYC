@@ -1,9 +1,28 @@
 from graph import Graph, Node
 from ucs_algorithm import UCS, UCSv2
+from astar_algorithm import Astar
 import json
  
 # Opening JSON file
+f = open('Dist(1).json')
+dist_dict = json.load(f)
+# Closing file
+f.close()
+#COSTdict
+f = open('Cost(1).json')
+cost_dict = json.load(f)
+f.close()
+#DISTdict
+f = open('Dist(1).json')
+dist_dict = json.load(f)
+f.close()
+#Gdict
+f = open('G(1).json')
+g_dict = json.load(f)
+f.close()
 
+
+dist_dict
 def run():
     # Create graph
     graph = Graph()
@@ -63,10 +82,19 @@ def run():
     graph.add_edge('V3', 'V4', 1)
     graph.add_edge('V3', 'V5', 6)
     graph.add_edge('V4', 'V5', 4)
-
-
+  
+    #initialise some coordinates
+    coordDict={
+      'V1':[0,0],
+      'V2':[4,5],
+      'V3':[2,2],
+      'V4':[11,5],
+      'V5':[7,5]
+    }
+    
     # Execute the algorithm
-    alg = UCSv2(graph, distDict, costDict, "V1", "V4")
+    # alg = UCSv2(graph, distDict, costDict, "V1", "V4")
+    alg =Astar(graph, distDict, costDict,coordDict, "V1", "V4")
     tempGraph = alg.search()
     for node in tempGraph.nodes:
       print(node.value)
