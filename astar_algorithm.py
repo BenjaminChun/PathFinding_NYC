@@ -194,7 +194,7 @@ class Astar:
     while not open_set.empty():
       self.number_of_steps += 1
       current = open_set.get() #grab the highest priority node
-      print(current[2].value,current[3].value)
+      # print(current[2].value,current[3].value)
       #about to expand current
       #add current to answer graph, tempGraph
       if self.number_of_steps>1:
@@ -217,7 +217,7 @@ class Astar:
       # add the extended nodes in the list opened
       if len(new_nodes) > 0:
         for new_node in new_nodes:
-          print(new_node.value,'hi')
+          # print(new_node.value,'hi')
           node1Value = current[2].value
           node2Value = new_node.value
           stringValues = f'{node1Value},{node2Value}'
@@ -225,10 +225,10 @@ class Astar:
           h_value = self.get_h_value(str(node2Value))
           finalScore = tempScore+h_value
           fuelLeft = current[4] - self.costDict[stringValues]
-          print(self.costDict[stringValues],stringValues)
+          # print(self.costDict[stringValues],stringValues)
           if fuelLeft < 0: #should not take this path
             continue
           else:
             count+=1
-            print(tempScore,h_value,node1Value,node2Value)
+            # print(tempScore,h_value,node1Value,node2Value)
             open_set.put((finalScore, count, new_node, current[2], fuelLeft))

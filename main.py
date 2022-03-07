@@ -3,32 +3,27 @@ from ucs_algorithm import UCS, UCSv2
 from astar_algorithm import Astar
 import json
  
-# Opening JSON file
-f = open('Dist(1).json')
-dist_dict = json.load(f)
-# Closing file
-f.close()
-#COSTdict
-f = open('Cost(1).json')
-cost_dict = json.load(f)
-f.close()
-#DISTdict
-f = open('Dist(1).json')
-dist_dict = json.load(f)
-f.close()
-#Gdict
-f = open('G(1).json')
-g_dict = json.load(f)
-f.close()
+# # Opening JSON file
+# f = open('Dist(1).json')
+# dist_dict = json.load(f)
+# # Closing file
+# f.close()
+# #COSTdict
+# f = open('Cost(1).json')
+# cost_dict = json.load(f)
+# f.close()
+# #DISTdict
+# f = open('Dist(1).json')
+# dist_dict = json.load(f)
+# f.close()
+# #Gdict
+# f = open('G(1).json')
+# g_dict = json.load(f)
+# f.close()
 
-
-dist_dict
 def run():
     # Create graph
     graph = Graph()
-    # Opening JSON file
-    # with open('data.json') as json_file:
-    #     data = json.load(json_file)
     distDict = {
       'V1,V2':9,
       'V1,V3':4,
@@ -66,13 +61,20 @@ def run():
       'V4,V3':7,
       'V5,V4':4
     }
+    coordDict={
+      'V1':[0,0],
+      'V2':[4,5],
+      'V3':[2,2],
+      'V4':[11,5],
+      'V5':[7,5]
+    }
     # Add vertices
     graph.add_node(Node('V1'))
     graph.add_node(Node('V2'))
     graph.add_node(Node('V3'))
     graph.add_node(Node('V4'))
     graph.add_node(Node('V5'))
-    
+
     # Add edges and distance and fuel cost
     graph.add_edge('V1', 'V2', 9)
     graph.add_edge('V1', 'V3', 4)
@@ -82,18 +84,37 @@ def run():
     graph.add_edge('V3', 'V4', 1)
     graph.add_edge('V3', 'V5', 6)
     graph.add_edge('V4', 'V5', 4)
-  
-    #initialise some coordinates
-    coordDict={
-      'V1':[0,0],
-      'V2':[4,5],
-      'V3':[2,2],
-      'V4':[11,5],
-      'V5':[7,5]
-    }
     
     # Execute the algorithm
-    # alg = UCSv2(graph, distDict, costDict, "V1", "V4")
+    alg = UCSv2(graph, distDict, costDict, "V1", "V4")
+    tempGraph = alg.search()
+    for node in tempGraph.nodes:
+      print(node.value)
+      for neighbor in node.neighbors:
+        print((neighbor[0].value, neighbor[1]))
+      print("--------------------")
+    
+    alg0 = UCSv2(tempGraph, distDict, costDict, "V4", "V1")
+    temptempGraph = alg0.search()
+
+    print("after second UCSv2")
+    for node in temptempGraph.nodes:
+      print(node.value)
+      for neighbor in node.neighbors:
+        print((neighbor[0].value, neighbor[1]))
+      print("--------------------")
+
+    alg1 = UCS(temptempGraph, "V1","V4")
+    path, path_length = alg1.search()
+    print(" -> ".join(path))
+    dis=0
+    energy=0
+    for i in range(len(path)-1):
+      dis+=distDict[path[i]+','+path[i+1]]
+      energy+=costDict[path[i]+','+path[i+1]]
+    print(f"Shortest distance: {dis}")
+    print(f"Total energy cost: {energy}")
+
     alg =Astar(graph, distDict, costDict,coordDict, "V1", "V4")
     tempGraph = alg.search()
     for node in tempGraph.nodes:
@@ -115,7 +136,13 @@ def run():
     alg1 = UCS(temptempGraph, "V1","V4")
     path, path_length = alg1.search()
     print(" -> ".join(path))
-    print(f"Length of the path: {path_length}")
+    dis=0
+    energy=0
+    for i in range(len(path)-1):
+      dis+=distDict[path[i]+','+path[i+1]]
+      energy+=costDict[path[i]+','+path[i+1]]
+    print(f"Shortest distance: {dis}")
+    print(f"Total energy cost: {energy}")
 
 if __name__ == '__main__':
   run()
