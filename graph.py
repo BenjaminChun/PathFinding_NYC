@@ -130,6 +130,10 @@ class Node:
                 str
         """
         return self.value
+
+    def update_heuristic(self, h_value):
+        self.heuristic_value = h_value
+    
         
 
 class Graph:
